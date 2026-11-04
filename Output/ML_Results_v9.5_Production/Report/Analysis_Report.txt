@@ -1,0 +1,114 @@
+============================================================================
+  GEOTA — PM2.5 HYBRID LUR (v9.5, 500m)
+  Hyderabad, Telangana, India
+============================================================================
+
+────────────────────────────────────────────────────────────────────────────
+1. METHODOLOGY
+────────────────────────────────────────────────────────────────────────────
+  Architecture : Hybrid LUR (IDW-anchored, environmental predictors)
+  Training data: IDW surface built from 14 CPCB station measurements
+  Predictors   : Road network, land use, terrain, satellite (no coordinates)
+  CV strategy  : Spatial block CV (4 geographic quadrants)
+                 + Standard 5-fold KF CV for comparison
+  Validation   : CPCB station comparison (naive)
+
+  Scientific basis:
+  The IDW surface encodes real PM2.5 spatial patterns measured by CPCB.
+  The model learns which environmental features explain those patterns.
+  Spatial block CV tests whether learned patterns generalize to
+  unmeasured parts of the city (held-out geographic quadrants).
+
+────────────────────────────────────────────────────────────────────────────
+2. DATA
+────────────────────────────────────────────────────────────────────────────
+  Stations    : 14
+  PM2.5 range : 23.8–52.5 µg/m³
+  Features    : 51 honest | 53 with IDW lag
+  Grid        : 2752 cells @ 500m
+  MODIS AOD   : yes
+  Landsat LST : yes
+
+────────────────────────────────────────────────────────────────────────────
+3. MODEL RESULTS
+────────────────────────────────────────────────────────────────────────────
+  Model            Category           SpatR²   KF-R²    KF±     RMSE  Note
+  ────────────────────────────────────────────────────────────────────────
+    Ridge_LUR        Linear            -3.5582  0.3238 0.2633   4.1653  
+    ElasticNet_LUR   Linear            -3.5201  0.3286 0.2516   4.1546  
+  ★ RF_tuned         Ensemble          -0.2379  0.9274 0.0095   1.3801  
+    RF_base          Ensemble          -0.2584  0.8744 0.0083   1.8196  
+    GB_ENH           Ensemble          -0.4308  0.8731 0.0123   1.8257  
+    ExtraT_ENH       Ensemble          -0.4712  0.7384 0.0066   2.6300  
+    RF_IDWlag        Ensemble+IDWlag    0.6946  0.9719 0.0031   0.8616  [+IDW lag]
+    GB_IDWlag        Ensemble+IDWlag    0.9683  0.9983 0.0002   0.2080  [+IDW lag]
+    LGB_ENH          Ensemble          -0.2685  0.9385 0.0078   1.2689  
+    XGB_ENH          Ensemble          -0.4619  0.8741 0.0125   1.8188  
+
+  ★ Best model (spatial CV) : RF_tuned
+    Spatial R²=-0.2379  KF R²=0.9274 ± 0.0095  RMSE=1.3801
+  Stacking    : KF R²=0.9869  RMSE=0.5890
+
+────────────────────────────────────────────────────────────────────────────
+4. CPCB STATION COMPARISON
+────────────────────────────────────────────────────────────────────────────
+  r=0.9714  R²=0.9046  RMSE=2.48 µg/m³
+  Note: Stations contributed to IDW training target.
+  BC slope=1.2352  intercept=-7.6856
+
+────────────────────────────────────────────────────────────────────────────
+5. PERMUTATION IMPORTANCE (top 15)
+────────────────────────────────────────────────────────────────────────────
+  rd_lag_5km                            0.973986  LUR
+  blt_lag_5km                           0.269390  LUR
+  aod_lag_5km                           0.156372  RS
+  aod_x_elev                            0.088978  RS
+  aod_lag_2km                           0.040857  RS
+  blt_lag_2km                           0.033339  LUR
+  elev_sq                               0.014329  LUR
+  mean_elev                             0.013030  LUR
+  elev_anom                             0.013005  LUR
+  mean_aod                              0.009632  RS
+  rd_lag_2km                            0.008844  LUR
+  dist_to_water_m                       0.008082  LUR
+  lg_d_water                            0.007913  LUR
+  inv_d_ind                             0.007632  LUR
+  lg_d_ind                              0.006010  LUR
+
+────────────────────────────────────────────────────────────────────────────
+6. GRID PREDICTIONS
+────────────────────────────────────────────────────────────────────────────
+  Raw               : 25.3–50.6 mean=36.2 std=4.8 µg/m³
+  Bias-corrected    : 23.5–54.8 mean=37.1 std=5.9 µg/m³
+
+  AQI distribution:
+    Good           :  219 (  8.0%)
+    Satisfactory   : 2533 ( 92.0%)
+    Moderate       :    0 (  0.0%)
+    Poor           :    0 (  0.0%)
+    Very Poor      :    0 (  0.0%)
+
+────────────────────────────────────────────────────────────────────────────
+7. FIGURES
+────────────────────────────────────────────────────────────────────────────
+  01_Model_Comparison.png                                    144.9 KB
+  02_Spatial_vs_KF_R2.png                                     68.5 KB
+  03_Permutation_Importance.png                              184.0 KB
+  04_MDI_Importance.png                                      167.3 KB
+  05_Feature_Importance_Summary.png                           98.9 KB
+  06_Learning_Curve.png                                       78.4 KB
+  07_Predicted_vs_Observed.png                               210.4 KB
+  08_Residual_Analysis.png                                   150.9 KB
+  09_Correlation_Heatmap.png                                 207.2 KB
+  10_Spatial_Maps.png                                        317.0 KB
+  11_Distribution_Comparison.png                              59.3 KB
+  12_Radar_Chart.png                                         272.8 KB
+  13_CPCB_Validation.png                                     161.9 KB
+  14_Remote_Sensing_Maps.png                                 241.7 KB
+  15_Prediction_and_Confidence.png                           179.4 KB
+  16_AQI_Map.png                                             194.2 KB
+  17_PM25_Map.png                                            253.5 KB
+
+============================================================================
+END OF REPORT
+============================================================================
