@@ -43,19 +43,15 @@ cd Hybrid-Geospatial-PM2.5-Mapping-and-interactive-prediction
 git lfs pull
 ```
 
-Use Python 3.10 in a Conda environment. For the existing local environment:
+Create a Python 3.10 Conda environment named `geotaa`. Install the geospatial packages from Conda Forge, then install the remaining Python requirements:
 
 ```powershell
-conda activate E:\anaconda_conda\envs\ml_env
+conda create -n geotaa -c conda-forge python=3.10 rasterio rasterstats pyhdf
+conda activate geotaa
 python -m pip install -r requirements.txt
 ```
 
-If the geospatial packages need native dependencies on Windows, install them through Conda first:
-
-```powershell
-conda install -c conda-forge rasterio rasterstats pyhdf
-python -m pip install -r requirements.txt
-```
+Keep the terminal in the cloned repository folder when running the commands below. All project paths are relative to that folder.
 
 The included model was serialized with scikit-learn **1.6.1**, which is pinned in `requirements.txt`. XGBoost and LightGBM extend the training comparison when installed; the training script checks for their availability.
 
