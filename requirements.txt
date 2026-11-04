@@ -1,0 +1,16 @@
+numpy
+pandas
+geopandas
+matplotlib
+seaborn
+shapely
+scipy
+rasterio
+rasterstats
+scikit-learn==1.6.1
+streamlit
+pyhdf
+
+# Optional regressors used when available during training.
+xgboost
+lightgbm
